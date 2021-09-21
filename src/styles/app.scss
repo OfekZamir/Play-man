@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+h1,
+h2,
+h3,
+h4 {
+  color: whitesmoke;
+}
+body {
+  font-family: "Lato", sans-serif;
+}
+h3,
+h4 {
+  font-weight: 400;
+  color: whitesmoke;
+}
+
+.App {
+  min-height: 100vh;
+  background-color: #18191b;
+}
+@import "./song";
+@import "./player";
+@import "./library";
