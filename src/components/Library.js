@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import LibrarySong from "./LibrarySong";
 
 const Library = ({
@@ -6,12 +6,14 @@ const Library = ({
   currentSong,
   SetCurrentSong,
   audioRef,
+  isPlaying,
   setIsPlaying,
+  libraryStatus,
+  ActiveSongId,
+  SetActiveSongId,
 }) => {
-  const [ActiveSongId, SetActiveSongId] = useState(currentSong.id);
-
   return (
-    <div className="library">
+    <div className={`library ${libraryStatus ? "active-library" : ""}`}>
       <h2>Library</h2>
       <div className="library-songs">
         {songs.map((song) => (
@@ -21,6 +23,7 @@ const Library = ({
             songs={songs}
             key={song.id}
             audioRef={audioRef}
+            isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}
             SetActiveSongId={SetActiveSongId}
             isActive={song.id === ActiveSongId}

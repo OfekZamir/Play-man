@@ -2,6 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 h1,
 h2,
@@ -25,3 +29,4 @@ h4 {
 @import "./song";
 @import "./player";
 @import "./library";
+@import "./Nav";

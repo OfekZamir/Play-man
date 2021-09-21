@@ -1,24 +1,25 @@
 import React from "react";
-
+import { playAudio } from "../util";
 const LibrarySong = ({
   song,
   SetCurrentSong,
   audioRef,
   setIsPlaying,
+  isPlaying,
   SetActiveSongId,
   isActive,
 }) => {
   const songSelectHandler = () => {
     SetCurrentSong(song);
-    const playPromise = audioRef.current.play();
-    console.log(audioRef.current.play());
-    if (playPromise !== undefined) {
-      playPromise.then((audio) => {
-        setIsPlaying(true);
-        SetActiveSongId(song.id);
-        audioRef.current.play();
-      });
-    }
+    SetActiveSongId(song.id);
+    playAudio(setIsPlaying, audioRef);
+
+    // const playPromise = audioRef.current.play();
+    // if (playPromise !== undefined) {
+    //   playPromise.then((audio) => {
+    //     audioRef.current.play();
+    //   });
+    // }
   };
 
   return (
