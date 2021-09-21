@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import LibrarySong from "./LibrarySong";
 
-const Library = ({ songs, SetCurrentSong }) => {
+const Library = ({
+  songs,
+  currentSong,
+  SetCurrentSong,
+  audioRef,
+  setIsPlaying,
+}) => {
+  const [ActiveSongId, SetActiveSongId] = useState(currentSong.id);
+
   return (
     <div className="library">
       <h2>Library</h2>
@@ -12,6 +20,10 @@ const Library = ({ songs, SetCurrentSong }) => {
             song={song}
             songs={songs}
             key={song.id}
+            audioRef={audioRef}
+            setIsPlaying={setIsPlaying}
+            SetActiveSongId={SetActiveSongId}
+            isActive={song.id === ActiveSongId}
           />
         ))}
       </div>
