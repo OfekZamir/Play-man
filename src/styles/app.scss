@@ -25,6 +25,13 @@ h4 {
 .App {
   min-height: 100vh;
   background-color: #18191b;
+  transition: all 0.5s ease;
+}
+.library-active {
+  margin-left: 20%;
+}
+#root {
+  background-color: #18191b;
 }
 @import "./song";
 @import "./player";

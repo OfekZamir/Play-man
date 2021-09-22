@@ -11,7 +11,9 @@
   display: flex;
   input {
     width: 100%;
-    margin: 1rem 2rem;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
   }
   p {
     padding: 1rem 2rem;
@@ -27,5 +29,42 @@
   svg {
     cursor: pointer;
     color: whitesmoke;
+  }
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 5px;
+}
+.track {
+  margin: 1rem 2rem;
+  width: 100%;
+  height: 1rem;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.animate-track {
+  background: whitesmoke;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 768px) {
+  .play-control {
+    width: 90%;
+  }
+  .time-control {
+    width: 80%;
+    p {
+      padding: 1rem 1rem;
+    }
+  }
+  .track {
+    margin: 1rem 0rem;
   }
 }

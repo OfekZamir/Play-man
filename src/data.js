@@ -77,7 +77,7 @@ function chillHop() {
         "https://chillhop.com/wp-content/uploads/2020/07/1f3f4b923f3877c4c2da054eb5b3b53f009866a9-1024x1024.jpg",
       artist: "L'Indécis",
       audio: "https://mp3.chillhop.com/serve.php/?mp3=8453",
-      color: ["##DFD9BF", "##DC9A91"],
+      color: ["#DFD9BF", "#DC9A91"],
       id: uuidv4(),
       active: false,
     },

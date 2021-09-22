@@ -1,5 +1,4 @@
 import React from "react";
-import { playAudio } from "../util";
 const LibrarySong = ({
   song,
   SetCurrentSong,
@@ -9,10 +8,11 @@ const LibrarySong = ({
   SetActiveSongId,
   isActive,
 }) => {
-  const songSelectHandler = () => {
-    SetCurrentSong(song);
+  const songSelectHandler = async () => {
+    await SetCurrentSong(song);
     SetActiveSongId(song.id);
-    playAudio(setIsPlaying, audioRef);
+    setIsPlaying(true);
+    audioRef.current.play();
 
     // const playPromise = audioRef.current.play();
     // if (playPromise !== undefined) {
