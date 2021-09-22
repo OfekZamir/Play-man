@@ -33,6 +33,11 @@ h4 {
 #root {
   background-color: #18191b;
 }
+@media screen and (max-width: 768px) {
+  .library-active {
+    margin-left: 0%;
+  }
+}
 @import "./song";
 @import "./player";
 @import "./library";
