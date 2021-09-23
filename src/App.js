@@ -9,10 +9,8 @@ import "./styles/app.scss";
 //Import Util
 import data from "./data";
 
-//test commit
-
 function App() {
-  const songs = useState(data());
+  const [songs, setSongs] = useState(data());
   const [currentSong, SetCurrentSong] = useState(songs[7]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [songInfo, setSongInfo] = useState({
