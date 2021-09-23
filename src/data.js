@@ -92,7 +92,7 @@ function chillHop() {
       artist: "L'Indécis",
       playlist: [],
       tags: [],
-      audio: "https://www.youtube.com/watch?v=4UJrJeYhSGI",
+      audio: "https://mp3.chillhop.com/serve.php/?mp3=8453",
       color: ["#DFD9BF", "#DC9A91"],
       id: uuidv4(),
       active: false,
