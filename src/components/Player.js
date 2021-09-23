@@ -18,8 +18,6 @@ const Player = ({
   SetCurrentSong,
   SetActiveSongId,
 }) => {
-  //UseEffect
-  console.log(currentSong.color[0]);
   //Event Handlers
   const playSongHandler = () => {
     if (isPlaying) {
