@@ -11,8 +11,10 @@ import data from "./data";
 
 function App() {
   const [songs, setSongs] = useState(data());
-  const [currentSong, SetCurrentSong] = useState(songs[7]);
+  const [currentSong, SetCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMute, setIsMute] = useState(false);
+  const [playerVolume, setPlayerVolume] = useState(0.8);
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
     duration: 0,
@@ -23,6 +25,7 @@ function App() {
 
   //Ref
   const audioRef = useRef(null);
+
   //Event Hanlder
   const songEndHandler = async () => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
@@ -59,6 +62,10 @@ function App() {
         currentSong={currentSong}
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
+        setPlayerVolume={setPlayerVolume}
+        playerVolume={playerVolume}
+        isMute={isMute}
+        setIsMute={setIsMute}
         songInfo={songInfo}
         setSongInfo={setSongInfo}
         SetCurrentSong={SetCurrentSong}
@@ -82,9 +89,9 @@ function App() {
         ref={audioRef}
         src={currentSong.audio}
         onEnded={songEndHandler}
+        volume={playerVolume}
       ></audio>
     </div>
   );
 }
-
 export default App;

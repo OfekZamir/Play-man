@@ -5,7 +5,12 @@ import {
   faPause,
   faAngleLeft,
   faAngleRight,
+  faVolumeUp,
+  faVolumeDown,
+  faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
+import { ReactComponent as Repeat } from "../icons/loop_all.svg";
+import { useState } from "react/cjs/react.development";
 
 const Player = ({
   songs,
@@ -13,11 +18,19 @@ const Player = ({
   currentSong,
   isPlaying,
   setIsPlaying,
+  setPlayerVolume,
+  playerVolume,
+  isMute,
+  setIsMute,
   songInfo,
   setSongInfo,
   SetCurrentSong,
   SetActiveSongId,
 }) => {
+  //States
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  let lastVolume = 0.8;
+
   //Event Handlers
   const playSongHandler = () => {
     if (isPlaying) {
@@ -27,6 +40,25 @@ const Player = ({
       audioRef.current.play();
       setIsPlaying(!isPlaying);
     }
+  };
+  const MuteSongHandler = () => {
+    if (isMute) {
+      audioRef.current.volume = lastVolume;
+      setPlayerVolume(lastVolume);
+      setIsMute(!isMute);
+    } else {
+      audioRef.current.volume = 0;
+      lastVolume = playerVolume;
+      setPlayerVolume(0);
+      setIsMute(!isMute);
+    }
+
+    console.log(audioRef.current.volume);
+  };
+  const PlayerVolumeHandler = (e) => {
+    audioRef.current.volume = e.target.value / 100;
+    setPlayerVolume(e.target.value / 100);
+    setIsMute(false);
   };
   const getTime = (time) => {
     return (
@@ -87,6 +119,7 @@ const Player = ({
         <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
+        <Repeat className="loop" />
         <FontAwesomeIcon
           onClick={() => skipTrackHandler("skip-back")}
           className="skip-back"
@@ -105,6 +138,28 @@ const Player = ({
           size="2x"
           icon={faAngleRight}
         />
+
+        <div id="volume-control">
+          <div id="volume-button">
+            <FontAwesomeIcon
+              onClick={() => MuteSongHandler()}
+              id="volume-button"
+              className="volume"
+              size="2x"
+              icon={isMute ? faVolumeMute : faVolumeUp}
+            />
+          </div>
+          <div id="volume-range">
+            <input
+              min={0}
+              max={100}
+              value={playerVolume * 100}
+              onChange={PlayerVolumeHandler}
+              className="volume"
+              type="range"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

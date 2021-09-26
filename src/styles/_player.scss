@@ -5,7 +5,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
 .time-control {
   width: 50%;
   display: flex;
@@ -29,8 +28,42 @@
   svg {
     cursor: pointer;
     color: whitesmoke;
+    fill: whitesmoke;
+    width: 2em;
+  }
+  .loop {
+    width: 2.2em !important;
+  }
+  .volume {
+    width: 1em !important;
   }
 }
+#volume-control {
+  display: inline-block;
+  position: relative;
+  &:hover #volume-range {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+#volume-range {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 2em;
+  border: 2px solid rgb(104, 104, 104);
+  background: whitesmoke;
+  border-radius: 15px;
+  padding: 0.3em;
+  transition: all 0.2s ease;
+  transform: translateY(-11em);
+  opacity: 0;
+  pointer-events: none;
+  .volume {
+    -webkit-appearance: slider-vertical;
+  }
+}
+
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 10px;
@@ -58,7 +91,6 @@ input[type="range"]::-moz-range-thumb {
   left: 0;
   pointer-events: none;
 }
-
 @media screen and (max-width: 768px) {
   .play-control {
     width: 90%;
