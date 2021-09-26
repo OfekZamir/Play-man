@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -10,7 +10,6 @@ import {
   faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as Repeat } from "../icons/loop_all.svg";
-import { useState } from "react/cjs/react.development";
 
 const Player = ({
   songs,
