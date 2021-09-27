@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -10,6 +10,9 @@ import {
   faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as Repeat } from "../icons/loop_all.svg";
+import { ReactComponent as Repeat_One } from "../icons/loop_one.svg";
+import { ReactComponent as No_Repeat } from "../icons/noloop.svg";
+import { ReactComponent as Shuffle } from "../icons/shuffle.svg";
 
 const Player = ({
   songs,
@@ -123,7 +126,35 @@ const Player = ({
         <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
-        <Repeat className="loop" />
+        <div
+          id="loop-button"
+          onClick={() => setLoopStatus((loopStatus + 1) % 4)}
+        >
+          <No_Repeat
+            className="loop"
+            style={{
+              display: `${loopStatus == 0 ? "block" : "none"}`,
+            }}
+          />
+          <Shuffle
+            className="loop"
+            style={{
+              display: `${loopStatus == 1 ? "block" : "none"}`,
+            }}
+          />
+          <Repeat
+            className="loop"
+            style={{
+              display: `${loopStatus == 2 ? "block" : "none"}`,
+            }}
+          />
+          <Repeat_One
+            className="loop"
+            style={{
+              display: `${loopStatus == 3 ? "block" : "none"}`,
+            }}
+          />
+        </div>
         <FontAwesomeIcon
           onClick={() => skipTrackHandler("skip-back")}
           className="skip-back"
