@@ -15,6 +15,8 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [playerVolume, setPlayerVolume] = useState(0.8);
+  const [lastVolume, setLastVolume] = useState(0.8);
+  const [loopStatus, setLoopStatus] = useState(0);
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
     duration: 0,
@@ -64,6 +66,10 @@ function App() {
         setIsPlaying={setIsPlaying}
         setPlayerVolume={setPlayerVolume}
         playerVolume={playerVolume}
+        loopStatus={loopStatus}
+        setLoopStatus={setLoopStatus}
+        lastVolume={lastVolume}
+        setLastVolume={setLastVolume}
         isMute={isMute}
         setIsMute={setIsMute}
         songInfo={songInfo}

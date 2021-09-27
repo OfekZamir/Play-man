@@ -19,6 +19,10 @@ const Player = ({
   setIsPlaying,
   setPlayerVolume,
   playerVolume,
+  lastVolume,
+  setLastVolume,
+  loopStatus,
+  setLoopStatus,
   isMute,
   setIsMute,
   songInfo,
@@ -26,11 +30,13 @@ const Player = ({
   SetCurrentSong,
   SetActiveSongId,
 }) => {
-  //States
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  let lastVolume = 0.8;
-
   //Event Handlers
+  const PlayerVolumeHandler = (e) => {
+    audioRef.current.volume = e.target.value / 100;
+    setPlayerVolume(e.target.value / 100);
+    setLastVolume(e.target.value / 100);
+    setIsMute(false);
+  };
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -47,24 +53,10 @@ const Player = ({
       setIsMute(!isMute);
     } else {
       audioRef.current.volume = 0;
-      lastVolume = playerVolume;
       setPlayerVolume(0);
       setIsMute(!isMute);
     }
-
-    console.log(audioRef.current.volume);
   };
-  const PlayerVolumeHandler = (e) => {
-    audioRef.current.volume = e.target.value / 100;
-    setPlayerVolume(e.target.value / 100);
-    setIsMute(false);
-  };
-  const getTime = (time) => {
-    return (
-      Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
-    );
-  };
-
   const dragHandler = (e) => {
     audioRef.current.currentTime = e.target.value;
     setSongInfo({ ...songInfo, currentTime: e.target.value });
@@ -89,7 +81,20 @@ const Player = ({
     setIsPlaying(true);
     audioRef.current.play();
   };
+  const loopButtonChanger = () => {
+    switch (loopStatus) {
+      case 0:
+        return 0;
+        break;
+    }
+  };
 
+  //Functions
+  const getTime = (time) => {
+    return (
+      Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
+    );
+  };
   return (
     <div className="player">
       <div className="time-control">
