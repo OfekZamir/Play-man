@@ -1,18 +1,20 @@
 import React from "react";
 const LibrarySong = ({
+  index,
   song,
   SetCurrentSong,
   audioRef,
   setIsPlaying,
-  isPlaying,
   SetActiveSongId,
   isActive,
+  createNewShuffleSongs,
 }) => {
   const songSelectHandler = async () => {
     await SetCurrentSong(song);
     SetActiveSongId(song.id);
     setIsPlaying(true);
     audioRef.current.play();
+    createNewShuffleSongs(index);
 
     // const playPromise = audioRef.current.play();
     // if (playPromise !== undefined) {

@@ -10,8 +10,8 @@ import {
   faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as Repeat } from "../icons/loop_all.svg";
-import { ReactComponent as Repeat_One } from "../icons/loop_one.svg";
-import { ReactComponent as No_Repeat } from "../icons/noloop.svg";
+import { ReactComponent as RepeatOne } from "../icons/loop_one.svg";
+import { ReactComponent as NoRepeat } from "../icons/noloop.svg";
 import { ReactComponent as Shuffle } from "../icons/shuffle.svg";
 
 const Player = ({
@@ -30,16 +30,9 @@ const Player = ({
   setIsMute,
   songInfo,
   setSongInfo,
-  SetCurrentSong,
-  SetActiveSongId,
+  skipTrackHandler,
 }) => {
   //Event Handlers
-  const PlayerVolumeHandler = (e) => {
-    audioRef.current.volume = e.target.value / 100;
-    setPlayerVolume(e.target.value / 100);
-    setLastVolume(e.target.value / 100);
-    setIsMute(false);
-  };
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -47,6 +40,28 @@ const Player = ({
     } else {
       audioRef.current.play();
       setIsPlaying(!isPlaying);
+    }
+  };
+  const PlayerVolumeHandler = (e) => {
+    audioRef.current.volume = e.target.value / 100;
+    setPlayerVolume(e.target.value / 100);
+    setLastVolume(e.target.value / 100);
+    if (e.target.value <= 0) {
+      setIsMute(true);
+    } else {
+      setIsMute(false);
+    }
+  };
+  const VolumeButtonHandler = () => {
+    switch (true) {
+      case playerVolume === 0:
+        return faVolumeMute;
+      case playerVolume >= 0.5:
+        return faVolumeUp;
+      case playerVolume <= 0.5:
+        return faVolumeDown;
+      default:
+        break;
     }
   };
   const MuteSongHandler = () => {
@@ -63,33 +78,6 @@ const Player = ({
   const dragHandler = (e) => {
     audioRef.current.currentTime = e.target.value;
     setSongInfo({ ...songInfo, currentTime: e.target.value });
-  };
-  const skipTrackHandler = async (direction) => {
-    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
-    if (direction === "skip-back") {
-      if ((currentIndex - 1) % songs.length === -1) {
-        await SetCurrentSong(songs[songs.length - 1]);
-        SetActiveSongId(songs[songs.length - 1].id);
-        setIsPlaying(true);
-        audioRef.current.play();
-        return;
-      }
-      await SetCurrentSong(songs[(currentIndex - 1) % songs.length]);
-      SetActiveSongId(songs[currentIndex - 1].id);
-    }
-    if (direction === "skip-forward") {
-      await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
-      SetActiveSongId(songs[(currentIndex + 1) % songs.length].id);
-    }
-    setIsPlaying(true);
-    audioRef.current.play();
-  };
-  const loopButtonChanger = () => {
-    switch (loopStatus) {
-      case 0:
-        return 0;
-        break;
-    }
   };
 
   //Functions
@@ -129,29 +117,30 @@ const Player = ({
         <div
           id="loop-button"
           onClick={() => setLoopStatus((loopStatus + 1) % 4)}
+          {...console.log(loopStatus)}
         >
-          <No_Repeat
+          <NoRepeat
             className="loop"
             style={{
-              display: `${loopStatus == 0 ? "block" : "none"}`,
+              display: `${loopStatus === 0 ? "block" : "none"}`,
             }}
           />
           <Shuffle
             className="loop"
             style={{
-              display: `${loopStatus == 1 ? "block" : "none"}`,
+              display: `${loopStatus === 1 ? "block" : "none"}`,
             }}
           />
           <Repeat
             className="loop"
             style={{
-              display: `${loopStatus == 2 ? "block" : "none"}`,
+              display: `${loopStatus === 2 ? "block" : "none"}`,
             }}
           />
-          <Repeat_One
+          <RepeatOne
             className="loop"
             style={{
-              display: `${loopStatus == 3 ? "block" : "none"}`,
+              display: `${loopStatus === 3 ? "block" : "none"}`,
             }}
           />
         </div>
@@ -181,7 +170,7 @@ const Player = ({
               id="volume-button"
               className="volume"
               size="2x"
-              icon={isMute ? faVolumeMute : faVolumeUp}
+              icon={VolumeButtonHandler()}
             />
           </div>
           <div id="volume-range">
