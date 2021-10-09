@@ -11,25 +11,22 @@ import data from "./data";
 
 function App() {
   //Funtions
-  const shuffleArray = (array) => {
+  function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
-  };
+  }
   const createShuffleSongs = (songs) => {
     let temp = Array.from(Array(songs.length).keys());
     temp.splice(0, 1);
     shuffleArray(temp);
+    temp.unshift(0);
     return temp;
   };
   const createNewShuffleSongs = (currentIndex) => {
-    let temp = Array.from(Array(songs.length).keys());
-    temp.splice(currentIndex, 1);
-    shuffleArray(temp);
-    setShuffledSong(temp);
     setShuffledSong((state) => {
       console.log("new shuffled list:");
       console.log(state);
@@ -70,28 +67,41 @@ function App() {
         }
         break;
       case 1:
+        setShuffledSong((state) => {
+          console.log("shuffled list:");
+          console.log(state);
+
+          console.log("shufflendex = " + shufflendex);
+          console.log("current index = " + currentIndex);
+          return state;
+        });
+        var shufflendex = shuffledSongs.findIndex(
+          (index) => index === currentIndex
+        );
         //shuffle - creating temp list for songs to play, picking randomly from the list and then removing it.
-        if (shuffledSongs.length > 1) {
-          await SetCurrentSong(songs[shuffledSongs[0]]);
-          SetActiveSongId(songs[shuffledSongs[0]].id);
-          setShuffledSong(shuffledSongs.splice(1, shuffledSongs.length - 1));
-          setShuffledSong((state) => {
-            console.log("remove shuffled song:");
-            console.log(state);
-            return state;
-          });
+        if (shufflendex === shuffledSongs.length - 1) {
+          //creating new shuffle list and playing first song
+          let newShuffledSongs = Array.from(Array(songs.length).keys());
+          newShuffledSongs.splice(currentIndex, 1);
+          shuffleArray(newShuffledSongs);
+          newShuffledSongs.unshift(currentIndex);
+          setShuffledSong(newShuffledSongs);
+          await SetCurrentSong(songs[newShuffledSongs[1]]);
+          SetActiveSongId(songs[newShuffledSongs[1]].id);
           audioRef.current.play();
         } else {
-          await SetCurrentSong(songs[shuffledSongs[0]]);
-          SetActiveSongId(songs[shuffledSongs[0]].id);
+          await SetCurrentSong(
+            songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]]
+          );
+          SetActiveSongId(
+            songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]].id
+          );
           audioRef.current.play();
-          createNewShuffleSongs(shuffledSongs[0]);
         }
 
         break;
       case 2:
         //loop - going back to start and keeps playing!
-
         await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
         SetActiveSongId(songs[(currentIndex + 1) % songs.length].id);
 
@@ -108,25 +118,46 @@ function App() {
     }
   };
   const skipTrackHandler = async (direction) => {
-    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
-
-    if (direction === "skip-back") {
-      if ((currentIndex - 1) % songs.length === -1) {
-        await SetCurrentSong(songs[songs.length - 1]);
-        SetActiveSongId(songs[songs.length - 1].id);
-        setIsPlaying(true);
+    console.log("Song skipped");
+    if (loopStatus === 1) {
+      //shuffle - creating temp list for songs to play, picking randomly from the list and then removing it.
+      if (shuffledSongs.length > 1) {
+        await SetCurrentSong(songs[shuffledSongs[0]]);
+        SetActiveSongId(songs[shuffledSongs[0]].id);
+        setShuffledSong(shuffledSongs.splice(1, shuffledSongs.length - 1));
+        setShuffledSong((state) => {
+          console.log("remove shuffled song:");
+          console.log(state);
+          return state;
+        });
         audioRef.current.play();
-        return;
+      } else {
+        await SetCurrentSong(songs[shuffledSongs[0]]);
+        SetActiveSongId(songs[shuffledSongs[0]].id);
+        audioRef.current.play();
+        createNewShuffleSongs(shuffledSongs[0]);
       }
-      await SetCurrentSong(songs[(currentIndex - 1) % songs.length]);
-      SetActiveSongId(songs[currentIndex - 1].id);
+    } else {
+      let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+
+      if (direction === "skip-back") {
+        if ((currentIndex - 1) % songs.length === -1) {
+          await SetCurrentSong(songs[songs.length - 1]);
+          SetActiveSongId(songs[songs.length - 1].id);
+          setIsPlaying(true);
+          audioRef.current.play();
+          return;
+        }
+        await SetCurrentSong(songs[(currentIndex - 1) % songs.length]);
+        SetActiveSongId(songs[currentIndex - 1].id);
+      }
+      if (direction === "skip-forward") {
+        await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
+        SetActiveSongId(songs[(currentIndex + 1) % songs.length].id);
+      }
+      setIsPlaying(true);
+      audioRef.current.play();
     }
-    if (direction === "skip-forward") {
-      await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
-      SetActiveSongId(songs[(currentIndex + 1) % songs.length].id);
-    }
-    setIsPlaying(true);
-    audioRef.current.play();
   };
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;

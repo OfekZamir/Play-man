@@ -117,7 +117,6 @@ const Player = ({
         <div
           id="loop-button"
           onClick={() => setLoopStatus((loopStatus + 1) % 4)}
-          {...console.log(loopStatus)}
         >
           <NoRepeat
             className="loop"
