@@ -19,28 +19,29 @@ function App() {
       array[j] = temp;
     }
   }
-  const createShuffleSongs = (songs) => {
+  const createShuffleSongs = (songs, currentIndex) => {
     let temp = Array.from(Array(songs.length).keys());
-    temp.splice(0, 1);
+    temp.splice(currentIndex, 1);
     shuffleArray(temp);
-    temp.unshift(0);
+    temp.unshift(currentIndex);
     return temp;
   };
   const createNewShuffleSongs = (currentIndex) => {
-    setShuffledSong((state) => {
-      console.log("new shuffled list:");
-      console.log(state);
-      return state;
-    });
+    let temp = Array.from(Array(songs.length).keys());
+    temp.splice(currentIndex, 1);
+    shuffleArray(temp);
+    temp.unshift(currentIndex);
+    setShuffledSong(temp);
   };
   const [songs, setSongs] = useState(data());
-  const [shuffledSongs, setShuffledSong] = useState(createShuffleSongs(songs));
-  const [shuffledSongIndex, setShuffledSongIndex] = useState(0);
+  const [shuffledSongs, setShuffledSong] = useState(
+    createShuffleSongs(songs, 0)
+  );
   const [currentSong, SetCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
-  const [playerVolume, setPlayerVolume] = useState(0.8);
-  const [lastVolume, setLastVolume] = useState(0.8);
+  const [playerVolume, setPlayerVolume] = useState(0.5);
+  const [lastVolume, setLastVolume] = useState(0.5);
   const [loopStatus, setLoopStatus] = useState(0);
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
@@ -70,34 +71,19 @@ function App() {
         setShuffledSong((state) => {
           console.log("shuffled list:");
           console.log(state);
-
-          console.log("shufflendex = " + shufflendex);
-          console.log("current index = " + currentIndex);
           return state;
         });
         var shufflendex = shuffledSongs.findIndex(
           (index) => index === currentIndex
         );
         //shuffle - creating temp list for songs to play, picking randomly from the list and then removing it.
-        if (shufflendex === shuffledSongs.length - 1) {
-          //creating new shuffle list and playing first song
-          let newShuffledSongs = Array.from(Array(songs.length).keys());
-          newShuffledSongs.splice(currentIndex, 1);
-          shuffleArray(newShuffledSongs);
-          newShuffledSongs.unshift(currentIndex);
-          setShuffledSong(newShuffledSongs);
-          await SetCurrentSong(songs[newShuffledSongs[1]]);
-          SetActiveSongId(songs[newShuffledSongs[1]].id);
-          audioRef.current.play();
-        } else {
-          await SetCurrentSong(
-            songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]]
-          );
-          SetActiveSongId(
-            songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]].id
-          );
-          audioRef.current.play();
-        }
+        await SetCurrentSong(
+          songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]]
+        );
+        SetActiveSongId(
+          songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]].id
+        );
+        audioRef.current.play();
 
         break;
       case 2:
@@ -118,24 +104,43 @@ function App() {
     }
   };
   const skipTrackHandler = async (direction) => {
-    console.log("Song skipped");
+    if (direction === "skip-back" && songInfo.currentTime >= 2) {
+      audioRef.current.currentTime = 0;
+
+      setIsPlaying(true);
+      audioRef.current.play();
+      return;
+    }
     if (loopStatus === 1) {
-      //shuffle - creating temp list for songs to play, picking randomly from the list and then removing it.
-      if (shuffledSongs.length > 1) {
-        await SetCurrentSong(songs[shuffledSongs[0]]);
-        SetActiveSongId(songs[shuffledSongs[0]].id);
-        setShuffledSong(shuffledSongs.splice(1, shuffledSongs.length - 1));
-        setShuffledSong((state) => {
-          console.log("remove shuffled song:");
-          console.log(state);
-          return state;
-        });
+      setShuffledSong((state) => {
+        console.log("shuffled list:");
+        console.log(state);
+        return state;
+      });
+      let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+      var shufflendex = shuffledSongs.findIndex(
+        (index) => index === currentIndex
+      );
+      if (direction === "skip-forward") {
+        await SetCurrentSong(
+          songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]]
+        );
+        SetActiveSongId(
+          songs[shuffledSongs[(shufflendex + 1) % shuffledSongs.length]].id
+        );
         audioRef.current.play();
-      } else {
-        await SetCurrentSong(songs[shuffledSongs[0]]);
-        SetActiveSongId(songs[shuffledSongs[0]].id);
-        audioRef.current.play();
-        createNewShuffleSongs(shuffledSongs[0]);
+      }
+      if (direction === "skip-back") {
+        if ((shufflendex - 1) % shuffledSongs.length === -1) {
+          console.log("t");
+          await SetCurrentSong(songs[shuffledSongs[shuffledSongs.length - 1]]);
+          SetActiveSongId(songs[shuffledSongs[shuffledSongs.length - 1]].id);
+          return;
+        }
+        await SetCurrentSong(
+          songs[shuffledSongs[(shufflendex - 1) % shuffledSongs.length]]
+        );
+        SetActiveSongId(songs[shuffledSongs[shufflendex - 1]].id);
       }
     } else {
       let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
@@ -144,8 +149,6 @@ function App() {
         if ((currentIndex - 1) % songs.length === -1) {
           await SetCurrentSong(songs[songs.length - 1]);
           SetActiveSongId(songs[songs.length - 1].id);
-          setIsPlaying(true);
-          audioRef.current.play();
           return;
         }
         await SetCurrentSong(songs[(currentIndex - 1) % songs.length]);
@@ -155,9 +158,9 @@ function App() {
         await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
         SetActiveSongId(songs[(currentIndex + 1) % songs.length].id);
       }
-      setIsPlaying(true);
-      audioRef.current.play();
     }
+    setIsPlaying(true);
+    audioRef.current.play();
   };
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;
