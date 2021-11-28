@@ -1,7 +1,6 @@
 # React Music Player - Play Man
 
 ### Music player in react using json and audio links for data.
-Functions:
 
 ## Available Functions
 
