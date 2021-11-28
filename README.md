@@ -1,4 +1,4 @@
-# React Music PLayer - Play Man
+# React Music Player - Play Man
 
 Music player in react using json and audio links for data.
 Functions:
@@ -7,4 +7,5 @@ Functions:
 
 ### songs library, pause/play, skip forward/back, adjust volume and shuffle.
 
-### `npm start`
+## Live showcase
+## Link : https://play-man.netlify.app/
